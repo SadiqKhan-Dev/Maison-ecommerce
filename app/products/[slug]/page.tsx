@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/app/ui/breadcrumb";
 import { PdpInteractive } from "@/app/components/products/pdp-interactive";
 import { ReviewsSection } from "@/app/components/products/reviews-section";
 import { RelatedProducts } from "@/app/components/products/related-products";
+import { RecentlyViewed } from "@/app/components/products/recently-viewed";
 import { JsonLd } from "@/app/components/seo/json-ld";
 import {
   getProductJsonLd,
@@ -158,6 +159,8 @@ export default async function ProductPage({
       </div>
 
       <RelatedProducts products={related} />
+
+      <RecentlyViewed />
 
       <div className="lg:hidden h-20" aria-hidden />
 

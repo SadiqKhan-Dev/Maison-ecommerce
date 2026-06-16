@@ -7,10 +7,12 @@ import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
 import { formatPrice } from "@/lib/utils/formatPrice";
+import { generateBlurPlaceholder } from "@/lib/utils/blur-placeholder";
 import { Badge, type BadgeVariant } from "@/app/ui/badge";
 import { StarRating } from "@/app/ui/star-rating";
 import { useWishlistStore } from "@/lib/store/wishlistStore";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useQuickViewStore } from "@/lib/store/quickViewStore";
 import type { Product } from "@/types/product";
 
 export interface ProductCardProps {
@@ -24,6 +26,8 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
   const toggle = useWishlistStore((s) => s.toggle);
   const addItem = useCartStore((s) => s.addItem);
   const closeCart = useCartStore((s) => s.closeCart);
+
+  const openQuickView = useQuickViewStore((s) => s.openQuickView);
 
   const isWished = has(product.id);
   const isSale =
@@ -41,6 +45,35 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
     e.preventDefault();
     e.stopPropagation();
     toggle(product.id);
+  };
+
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const colors = Array.from(
+      new Map(
+        product.variants.map((v) => [v.color, { name: v.color, hex: v.colorHex }])
+      ).values()
+    );
+    const sizes = Array.from(
+      new Map(
+        product.variants.map((v) => [
+          v.size,
+          { name: v.size, available: v.stock > 0 },
+        ])
+      ).values()
+    );
+    openQuickView({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      brand: product.brand,
+      price: product.salePrice ?? product.basePrice,
+      originalPrice: product.basePrice,
+      images: product.images,
+      colors,
+      sizes,
+    });
   };
 
   const handleQuickAdd = (e: React.MouseEvent) => {
@@ -84,6 +117,8 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             priority={priority}
+            placeholder="blur"
+            blurDataURL={generateBlurPlaceholder()}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
           {product.images[1] && (
@@ -117,10 +152,16 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
             />
           </button>
 
-          <div className="absolute inset-x-3 bottom-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <div className="absolute inset-x-3 bottom-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex gap-2">
+            <button
+              onClick={handleQuickView}
+              className="h-10 px-3 bg-background/90 backdrop-blur text-foreground text-[10px] uppercase tracking-[0.2em] font-medium rounded-md hover:bg-background transition-colors flex-shrink-0"
+            >
+              Quick view
+            </button>
             <button
               onClick={handleQuickAdd}
-              className="w-full h-10 bg-foreground text-background text-[10px] uppercase tracking-[0.2em] font-medium rounded-md hover:bg-accent-dark transition-colors"
+              className="flex-1 h-10 bg-foreground text-background text-[10px] uppercase tracking-[0.2em] font-medium rounded-md hover:bg-accent-dark transition-colors"
             >
               Quick add
             </button>

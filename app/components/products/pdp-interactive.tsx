@@ -12,6 +12,7 @@ import { Badge } from "@/app/ui/badge";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react";
 import { getReviewStatsForProduct } from "@/data/reviews";
+import { useRecentlyViewedStore } from "@/lib/store/recentlyViewedStore";
 import type { Product } from "@/types/product";
 
 export function PdpInteractive({ product }: { product: Product }) {
@@ -59,6 +60,19 @@ export function PdpInteractive({ product }: { product: Product }) {
     );
     setSize(firstInStock?.size);
   };
+
+  // Track in recently viewed
+  const addRecentlyViewed = useRecentlyViewedStore((s) => s.addProduct);
+  React.useEffect(() => {
+    addRecentlyViewed({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      brand: product.brand,
+      price: product.salePrice ?? product.basePrice,
+      image: product.images[0],
+    });
+  }, [product, addRecentlyViewed]);
 
   // Sticky bar visibility
   React.useEffect(() => {

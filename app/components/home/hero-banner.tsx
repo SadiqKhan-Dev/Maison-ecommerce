@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/app/ui/button";
+import { generateBlurPlaceholder } from "@/lib/utils/blur-placeholder";
 
 export function HeroBanner() {
   return (
@@ -19,6 +20,8 @@ export function HeroBanner() {
         fill
         priority
         sizes="100vw"
+        placeholder="blur"
+        blurDataURL={generateBlurPlaceholder()}
         className="object-cover opacity-90"
       />
       <div

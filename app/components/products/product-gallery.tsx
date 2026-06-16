@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils/cn";
+import { generateBlurPlaceholder } from "@/lib/utils/blur-placeholder";
 
 export interface ProductGalleryProps {
   images: string[];
@@ -64,6 +65,8 @@ export function ProductGallery({ images, alt }: ProductGalleryProps) {
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 60vw"
+          placeholder="blur"
+          blurDataURL={generateBlurPlaceholder()}
           className={cn(
             "object-cover transition-transform duration-300",
             zoom && "scale-150"

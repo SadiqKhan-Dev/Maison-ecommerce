@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -17,8 +18,15 @@ import { useWishlistStore } from "@/lib/store/wishlistStore";
 import { useMobileMenu } from "./mobile-menu-provider";
 import { UserMenu } from "./user-menu";
 import { ThemeToggle } from "./theme-toggle";
-import { SearchOverlay } from "@/app/components/shared/search-overlay";
 import { collections } from "@/data/collections";
+
+const SearchOverlay = dynamic(
+  () =>
+    import("@/app/components/shared/search-overlay").then(
+      (m) => m.SearchOverlay
+    ),
+  { ssr: false, loading: () => null }
+);
 
 const NAV_LINKS = [
   {

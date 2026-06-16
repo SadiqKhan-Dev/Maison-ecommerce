@@ -5,10 +5,9 @@ import { Navbar } from "@/app/components/layout/navbar";
 import { Footer } from "@/app/components/layout/footer";
 import { AnnouncementBar } from "@/app/components/layout/announcement-bar";
 import { MobileMenuProvider } from "@/app/components/layout/mobile-menu-provider";
-import { CartDrawer } from "@/app/components/cart/cart-drawer";
 import { AuthProvider } from "@/app/components/auth/auth-provider";
 import { ThemeProvider } from "@/app/components/theme-provider";
-import { CustomCursor } from "@/app/components/shared/custom-cursor";
+import { ClientOverlays } from "@/app/components/shared/client-overlays";
 import { JsonLd } from "@/app/components/seo/json-ld";
 import {
   getOrganizationJsonLd,
@@ -149,8 +148,7 @@ export default function RootLayout({
               <Footer />
             </AuthProvider>
           </MobileMenuProvider>
-          <CartDrawer />
-          <CustomCursor />
+          <ClientOverlays />
         </ThemeProvider>
 
         <div id="route-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />
