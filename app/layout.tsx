@@ -123,6 +123,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable}`}
     >
       <body
