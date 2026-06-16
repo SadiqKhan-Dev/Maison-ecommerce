@@ -75,6 +75,7 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
         href={`/products/${product.slug}`}
         className="block focus:outline-none"
         aria-label={`${product.name} by ${product.brand}`}
+        data-cursor="bag"
       >
         <div className="relative aspect-[3/4] overflow-hidden bg-muted/5 rounded-md">
           <Image

@@ -144,7 +144,7 @@ export function AccountSidebar({
                 <span
                   className={cn(
                     "h-5 min-w-5 px-1.5 text-[10px] font-medium rounded-full flex items-center justify-center",
-                    active ? "bg-accent text-foreground" : "bg-sale text-white"
+                    active ? "bg-accent text-foreground" : "bg-sale text-background"
                   )}
                 >
                   {wishlistCount}

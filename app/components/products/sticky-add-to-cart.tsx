@@ -43,6 +43,7 @@ export function StickyAddToCart({
             shape="full"
             onClick={openCart}
             className="px-5"
+            data-cursor="bag"
           >
             <ShoppingBag className="h-4 w-4" />
             Bag {itemCount > 0 ? `(${itemCount})` : ""}

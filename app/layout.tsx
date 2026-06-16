@@ -7,6 +7,8 @@ import { AnnouncementBar } from "@/app/components/layout/announcement-bar";
 import { MobileMenuProvider } from "@/app/components/layout/mobile-menu-provider";
 import { CartDrawer } from "@/app/components/cart/cart-drawer";
 import { AuthProvider } from "@/app/components/auth/auth-provider";
+import { ThemeProvider } from "@/app/components/theme-provider";
+import { CustomCursor } from "@/app/components/shared/custom-cursor";
 import { JsonLd } from "@/app/components/seo/json-ld";
 import {
   getOrganizationJsonLd,
@@ -124,21 +126,32 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable}`}
     >
-      <body className="min-h-screen flex flex-col bg-background text-foreground antialiased">
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
-        <MobileMenuProvider>
-          <AuthProvider>
-            <AnnouncementBar />
-            <Navbar />
-            <main id="main-content" className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </AuthProvider>
-        </MobileMenuProvider>
-        <CartDrawer />
+      <body
+        suppressHydrationWarning
+        className="min-h-screen flex flex-col bg-background text-foreground antialiased"
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
+          <MobileMenuProvider>
+            <AuthProvider>
+              <AnnouncementBar />
+              <Navbar />
+              <main id="main-content" className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </AuthProvider>
+          </MobileMenuProvider>
+          <CartDrawer />
+          <CustomCursor />
+        </ThemeProvider>
 
         <div id="route-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />
         <JsonLd data={[getOrganizationJsonLd(), getWebSiteJsonLd()]} />

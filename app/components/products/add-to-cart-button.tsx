@@ -71,6 +71,7 @@ export function AddToCartButton({
           className="flex-1"
           onClick={handleAdd}
           disabled={!canAdd}
+          data-cursor="bag"
         >
           <AnimatePresence mode="wait" initial={false}>
             {added ? (

@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils/cn";
 
 const variants = {
   default: "bg-foreground text-background",
-  sale: "bg-sale text-white",
-  new: "bg-success text-white",
+  sale: "bg-sale text-background",
+  new: "bg-success text-background",
   outline: "border border-foreground/20 text-foreground bg-background",
   muted: "bg-muted/10 text-muted",
   accent: "bg-accent text-foreground",

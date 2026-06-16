@@ -16,6 +16,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useWishlistStore } from "@/lib/store/wishlistStore";
 import { useMobileMenu } from "./mobile-menu-provider";
 import { UserMenu } from "./user-menu";
+import { ThemeToggle } from "./theme-toggle";
 import { SearchOverlay } from "@/app/components/shared/search-overlay";
 import { collections } from "@/data/collections";
 
@@ -205,6 +206,7 @@ export function Navbar() {
           >
             <Search className="h-5 w-5" />
           </button>
+          <ThemeToggle />
           <Link
             href="/account/wishlist"
             aria-label={`Wishlist (${wishlistCount} items)`}
@@ -214,7 +216,7 @@ export function Navbar() {
             {wishlistCount > 0 && (
               <span
                 aria-hidden
-                className="absolute top-0 right-0 h-4 w-4 bg-sale text-white text-[9px] font-medium rounded-full flex items-center justify-center"
+                className="absolute top-0 right-0 h-4 w-4 bg-sale text-background text-[9px] font-medium rounded-full flex items-center justify-center"
               >
                 {wishlistCount}
               </span>
@@ -225,6 +227,7 @@ export function Navbar() {
             onClick={openCart}
             aria-label={`Shopping bag (${cartCount} items)`}
             className="p-2 hover:text-accent-dark transition-colors relative"
+            data-cursor="bag"
           >
             <ShoppingBag className="h-5 w-5" />
             {cartCount > 0 && (

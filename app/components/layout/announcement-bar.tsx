@@ -17,7 +17,7 @@ export function AnnouncementBar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative bg-foreground text-background text-xs",
+        "relative bg-[#1a1a18] text-[#fafaf8] dark:bg-[#0a0a09] dark:text-[#f0efe8] text-xs",
         className
       )}
       role="region"

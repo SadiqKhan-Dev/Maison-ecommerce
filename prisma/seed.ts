@@ -1,4 +1,13 @@
-import type { Product, ProductVariant } from "@/types/product";
+import "dotenv/config";
+import { PrismaClient, Category } from "@prisma/client";
+import { neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
+
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
 
 const img = (id: string, seed: number) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80&seed=${seed}`;
@@ -21,12 +30,17 @@ function makeVariants(
   productId: string,
   sizes: string[],
   colorCount: number = 4
-): ProductVariant[] {
-  const variants: ProductVariant[] = [];
+) {
+  const variants: {
+    size: string;
+    color: string;
+    colorHex: string;
+    sku: string;
+    stock: number;
+  }[] = [];
   sizes.forEach((size, sIdx) => {
     colors.slice(0, colorCount).forEach((color, cIdx) => {
       variants.push({
-        id: `${productId}-${size}-${color.name}`,
         size,
         color: color.name,
         colorHex: color.hex,
@@ -40,7 +54,27 @@ function makeVariants(
 
 const imgs = (...ids: string[]) => ids.map((id, i) => img(id, i + 1));
 
-export const mockProducts: Product[] = [
+interface SeedProduct {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  brand: string;
+  category: Category;
+  subCategory: string;
+  images: string[];
+  variants: ReturnType<typeof makeVariants>;
+  basePrice: number;
+  salePrice?: number;
+  tags: string[];
+  rating: number;
+  reviewCount: number;
+  createdAt: string;
+  isNew?: boolean;
+  isBestseller?: boolean;
+}
+
+const products: SeedProduct[] = [
   // ─── MEN ───────────────────────────────────────────────────────────
   {
     id: "p1",
@@ -945,7 +979,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "p42",
-    slug: "suede-chelsea-boots",
+    slug: "suede Chelsea boots",
     name: "Suede Chelsea Boots",
     description:
       "A refined Chelsea boot in supple Italian suede with elastic side panels and a leather-stacked heel.",
@@ -1139,7 +1173,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "p51",
-    slug: "organic-cotton-sleep-set",
+    slug: "organic棉睡衣套装",
     name: "Organic Cotton Sleep Set",
     description:
       "A two-piece sleep set in GOTS-certified organic cotton with a relaxed fit top and elasticated waist pants.",
@@ -1310,35 +1344,64 @@ export const mockProducts: Product[] = [
   },
 ];
 
-// ─── DERIVED LISTS ─────────────────────────────────────────────────────
-export const newArrivals = mockProducts.filter((p) => p.isNew);
-export const bestsellers = mockProducts.filter((p) => p.isBestseller);
-export const onSale = mockProducts.filter(
-  (p) => p.salePrice !== undefined && p.salePrice < p.basePrice
-);
-export const seasonalPicks = mockProducts.filter((p) =>
-  p.tags.includes("winter")
-);
+async function main() {
+  console.log("Seeding database...");
 
-// ─── QUERIES ──────────────────────────────────────────────────────────
-export function getProductBySlug(slug: string): Product | undefined {
-  return mockProducts.find((p) => p.slug === slug);
+  // Clear existing data
+  await prisma.review.deleteMany();
+  await prisma.wishlistItem.deleteMany();
+  await prisma.cartItem.deleteMany();
+  await prisma.orderItem.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.address.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.variant.deleteMany();
+  await prisma.product.deleteMany();
+
+  console.log("Cleared existing data.");
+
+  // Seed products
+  for (const product of products) {
+    await prisma.product.create({
+      data: {
+        id: product.id,
+        slug: product.slug,
+        name: product.name,
+        description: product.description,
+        brand: product.brand,
+        category: product.category,
+        subCategory: product.subCategory,
+        images: product.images,
+        basePrice: product.basePrice,
+        salePrice: product.salePrice,
+        tags: product.tags,
+        rating: product.rating,
+        reviewCount: product.reviewCount,
+        isNew: product.isNew ?? false,
+        isBestseller: product.isBestseller ?? false,
+        createdAt: new Date(product.createdAt),
+        variants: {
+          create: product.variants.map((v) => ({
+            size: v.size,
+            color: v.color,
+            colorHex: v.colorHex,
+            sku: v.sku,
+            stock: v.stock,
+          })),
+        },
+      },
+    });
+  }
+
+  console.log(`Seeded ${products.length} products with variants.`);
+  console.log("Done!");
 }
 
-export function getAllProductSlugs(): string[] {
-  return mockProducts.map((p) => p.slug);
-}
-
-export function getRelatedProducts(
-  product: Product,
-  limit: number = 4
-): Product[] {
-  return mockProducts
-    .filter(
-      (p) =>
-        p.id !== product.id &&
-        (p.category === product.category ||
-          p.subCategory === product.subCategory)
-    )
-    .slice(0, limit);
-}
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

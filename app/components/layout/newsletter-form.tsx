@@ -52,7 +52,7 @@ export function NewsletterForm({
         type="email"
         required
         placeholder="your@email.com"
-        className="flex-1 h-12 bg-transparent border border-background/30 px-4 text-sm placeholder:text-background/40 focus:outline-none focus:border-accent"
+        className="flex-1 h-12 bg-transparent border border-white/30 px-4 text-sm placeholder:text-white/40 focus:outline-none focus:border-accent"
       />
       <button
         type="submit"
