@@ -4,7 +4,6 @@ import * as React from "react";
 import { ShoppingBag } from "lucide-react";
 
 export function CustomCursor() {
-  const dotRef = React.useRef<HTMLDivElement>(null);
   const ringRef = React.useRef<HTMLDivElement>(null);
   const bagRef = React.useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = React.useState(false);
@@ -64,11 +63,6 @@ export function CustomCursor() {
 
     let raf: number;
     const animate = () => {
-      if (dotRef.current) {
-        dotRef.current.style.left = `${pos.current.x}px`;
-        dotRef.current.style.top = `${pos.current.y}px`;
-      }
-
       ringPos.current.x += (pos.current.x - ringPos.current.x) * 0.12;
       ringPos.current.y += (pos.current.y - ringPos.current.y) * 0.12;
 
@@ -97,10 +91,6 @@ export function CustomCursor() {
 
   return (
     <>
-      <div
-        ref={dotRef}
-        className={`cursor-dot ${isHovering ? "cursor-hover" : ""} ${isBagActive ? "cursor-bag-active" : ""}`}
-      />
       <div
         ref={ringRef}
         className={`cursor-ring ${isHovering ? "cursor-hover" : ""} ${isBagActive ? "cursor-bag-active" : ""}`}
