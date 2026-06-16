@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { BackToTop } from "@/app/components/products/back-to-top";
 
 const CartDrawer = dynamic(
   () => import("@/app/components/cart/cart-drawer").then((m) => m.CartDrawer),
@@ -29,6 +30,7 @@ export function ClientOverlays() {
       <CartDrawer />
       <QuickViewModal />
       <CustomCursor />
+      <BackToTop />
     </>
   );
 }
