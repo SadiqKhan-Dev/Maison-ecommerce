@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
     const csp = [
       "default-src 'self'",
       "base-uri 'self'",
-      "frame-ancestors 'self'",
+      "frame-ancestors 'self' http://localhost:3000",
       "img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com",
       "media-src 'self'",
       "font-src 'self' data:",
